@@ -55,4 +55,12 @@ class ServerConnect {
         val request = Request.Builder().delete().url(url).build()
         client.newCall(request).execute().body!!.string()
     }
+
+    fun getChatList(): String {
+        val url = "$baseURL/message/get-chat-list"
+        val client = OkHttpClient()
+        val request = Request.Builder().url(url).build()
+        val response = client.newCall(request).execute()
+        return response.body!!.string()
+    }
 }

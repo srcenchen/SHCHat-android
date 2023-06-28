@@ -94,6 +94,17 @@ class MainActivity : ComponentActivity() {
     @Composable
     fun MainUI() {
         chatListMutable = remember { mutableStateListOf() }
+        val loaded = remember { mutableStateOf(false) }
+        LaunchedEffect(key1 = true, block = {
+
+            // 手动获取一次聊天记录
+            thread {
+                chatJson = ServerConnect().getChatList()
+                parseChatJson()
+                loaded.value = true
+            }
+        })
+
         LazyColumn(
             reverseLayout = true
         ) {
@@ -108,7 +119,7 @@ class MainActivity : ComponentActivity() {
         }
         Box(modifier = Modifier.fillMaxSize()) {
             if (chatListMutable.isEmpty()) {
-                if (chatJson == "")
+                if (!loaded.value)
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 else {
                     Text(
@@ -136,8 +147,9 @@ class MainActivity : ComponentActivity() {
                 Button(
                     onClick = {
                         thread {
-                            ServerConnect().sendMessage(contentEdit)
+                            val temp = contentEdit
                             contentEdit = ""
+                            ServerConnect().sendMessage(temp)
                         }
                     }, modifier = Modifier
                         .padding(start = 8.dp)
