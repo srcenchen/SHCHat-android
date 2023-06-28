@@ -65,6 +65,7 @@ class MainActivity : ComponentActivity() {
     private lateinit var webSocket: WebSocket
     private lateinit var chatListMutable: SnapshotStateList<Chat>
     var chatJson = ""
+    var isFirst = true
 
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -96,7 +97,6 @@ class MainActivity : ComponentActivity() {
         chatListMutable = remember { mutableStateListOf() }
         val loaded = remember { mutableStateOf(false) }
         LaunchedEffect(key1 = true, block = {
-
             // 手动获取一次聊天记录
             thread {
                 chatJson = ServerConnect().getChatList()
@@ -104,7 +104,6 @@ class MainActivity : ComponentActivity() {
                 loaded.value = true
             }
         })
-
         LazyColumn(
             reverseLayout = true
         ) {
@@ -235,7 +234,10 @@ class MainActivity : ComponentActivity() {
         val chatListHandler = Handler.Callback { message ->
             chatJson = message.data.getString("chatJson", "{\"code\":0,\"data\":{\"chatList\":[]},\"msg\":\"\"}")
             Log.i("Websocket", chatJson)
-            parseChatJson()
+            if (!isFirst)
+                parseChatJson()
+            else
+                isFirst = false
             return@Callback true
         }
         webSocket = ServerConnect().websocket(chatListHandler)
