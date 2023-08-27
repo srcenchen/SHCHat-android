@@ -3,23 +3,21 @@ package com.sanenchen.shchat_android.server
 import android.os.Handler
 import android.os.Message
 import android.util.Log
-import com.sanenchen.shchat_android.MainActivity
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.WebSocket
 import okhttp3.WebSocketListener
-import okio.ByteString
 import org.json.JSONObject
 
 class ServerConnect {
     private val hostname = "shchat.luckysan.top"
-    private val baseURL = "http://$hostname/api"
+    private val baseURL = "https://$hostname/api"
 
     fun websocket(chatListHandler: Handler.Callback): WebSocket {
         val client = OkHttpClient.Builder().build()
-        val request = Request.Builder().url("ws://$hostname:8070/api/message/chat-list-w-s").build()
+        val request = Request.Builder().url("wss://$hostname:8070/api/message/chat-list-w-s").build()
         val ws = client.newWebSocket(request, object : WebSocketListener() {
             override fun onMessage(webSocket: WebSocket, text: String) {
                 super.onMessage(webSocket, text)

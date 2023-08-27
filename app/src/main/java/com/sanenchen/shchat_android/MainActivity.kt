@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.view.WindowCompat
+import cn.jpush.android.api.JPushInterface
 import com.sanenchen.shchat_android.data.chatlist.Chat
 import com.sanenchen.shchat_android.server.ServerConnect
 import com.sanenchen.shchat_android.ui.theme.SHChat_androidTheme
@@ -71,6 +72,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+        JPushInterface.setDebugMode(true); // debug开关，传true是打开debug模式
+        JPushInterface.init(this); // 初始化 JPush
+        Log.i("RegistrationID", JPushInterface.getRegistrationID(this)) // 获取注册的ID
         setContent {
             SHChat_androidTheme {
                 val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -90,7 +94,6 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
 
     @Composable
     fun MainUI() {
